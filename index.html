@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substituir Múltiplos Caracteres em Tempo Real</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 50px;
+            margin-top: 10px;
+        }
+        input[type="text"], button {
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+        }
+        label {
+            display: flex;
+            align-items: center;
+        }
+        input[type="checkbox"] {
+            margin-left: 10px;
+        }
+        #btn-copiar {
+            width: auto;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        #presetInicio{
+            width: 100%;
+            height: 5%;
+            margin-top: 10px;
+        }
+        #presetFinal{
+            width: 100%;
+            height: 5%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Substituir Múltiplos Caracteres no Texto (Tempo Real)</h1>
+    <label for="texto">Insira o texto abaixo:</label>
+    <textarea id="texto"></textarea>
+    
+    <h2>Resultado:</h2>
+    <textarea id="resultado" readonly></textarea>
+    
+    <button id="btn-copiar">Copiar Código</button>
+    
+    <label for="presetInicio">Texto que sempre aparece no início:
+        <input type="checkbox" id="converterInicio"> Converter na substituição?
+    </label>
+
+    <textarea id="presetInicio" placeholder="Insira o valor fixo para o início"></textarea>
+
+    <label for="presetFinal">Texto que sempre aparece no final:
+        <input type="checkbox" id="converterFinal"> Converter na substituição?
+    </label>
+    
+    <textarea id="presetFinal" placeholder="Insira o valor fixo para o final"></textarea>
+
+
+    <label for="charOriginal">Caracteres a serem substituídos (separados por vírgula):</label>
+    <input type="text" id="charOriginal" placeholder="Ex: <,>">
+
+    <label for="charNovo">Novos caracteres (separados por vírgula, na mesma ordem):</label>
+    <input type="text" id="charNovo" placeholder="Ex: &lt;,&gt;">
+
+    
+
+    <script>
+        // Carregar preferências salvas
+        window.onload = function() {
+            if (localStorage.getItem('charOriginal')) {
+                document.getElementById('charOriginal').value = localStorage.getItem('charOriginal');
+            }
+            if (localStorage.getItem('charNovo')) {
+                document.getElementById('charNovo').value = localStorage.getItem('charNovo');
+            }
+            if (localStorage.getItem('presetInicio')) {
+                document.getElementById('presetInicio').value = localStorage.getItem('presetInicio');
+            }
+            if (localStorage.getItem('presetFinal')) {
+                document.getElementById('presetFinal').value = localStorage.getItem('presetFinal');
+            }
+        };
+
+        // Função para substituir os caracteres em tempo real
+        function substituirTexto() {
+            let texto = document.getElementById('texto').value;
+            const charsOriginais = document.getElementById('charOriginal').value.split(',');
+            const charsNovos = document.getElementById('charNovo').value.split(',');
+
+            if (charsOriginais.length !== charsNovos.length) {
+                document.getElementById('resultado').value = "Erro: Quantidade de caracteres diferentes.";
+                return;
+            }
+
+            let textoModificado = texto;
+
+            // Aplicar a conversão nos caracteres do texto principal
+            for (let i = 0; i < charsOriginais.length; i++) {
+                const regex = new RegExp(charsOriginais[i], 'g');
+                textoModificado = textoModificado.replace(regex, charsNovos[i]);
+            }
+
+            // Verificar se o preset de início deve ser convertido
+            let presetInicio = document.getElementById('presetInicio').value;
+            if (document.getElementById('converterInicio').checked) {
+                for (let i = 0; i < charsOriginais.length; i++) {
+                    const regex = new RegExp(charsOriginais[i], 'g');
+                    presetInicio = presetInicio.replace(regex, charsNovos[i]);
+                }
+            }
+
+            // Verificar se o preset de final deve ser convertido
+            let presetFinal = document.getElementById('presetFinal').value;
+            if (document.getElementById('converterFinal').checked) {
+                for (let i = 0; i < charsOriginais.length; i++) {
+                    const regex = new RegExp(charsOriginais[i], 'g');
+                    presetFinal = presetFinal.replace(regex, charsNovos[i]);
+                }
+            }
+
+            // Combinar os presets com o texto modificado
+            textoModificado = presetInicio + textoModificado + presetFinal;
+
+            document.getElementById('resultado').value = textoModificado;
+
+            // Salvar os caracteres no localStorage
+            localStorage.setItem('charOriginal', document.getElementById('charOriginal').value);
+            localStorage.setItem('charNovo', document.getElementById('charNovo').value);
+            localStorage.setItem('presetInicio', document.getElementById('presetInicio').value);
+            localStorage.setItem('presetFinal', document.getElementById('presetFinal').value);
+        }
+
+        // Função para copiar o texto para a área de transferência
+        function copiarTexto() {
+            const resultado = document.getElementById('resultado');
+            resultado.select();
+            resultado.setSelectionRange(0, 99999); // Para mobile
+            document.execCommand('copy'); // Copia o texto
+            alert("Texto copiado para a área de transferência!");
+        }
+
+        // Atualizar o resultado em tempo real
+        document.getElementById('texto').addEventListener('input', substituirTexto);
+        document.getElementById('charOriginal').addEventListener('input', substituirTexto);
+        document.getElementById('charNovo').addEventListener('input', substituirTexto);
+        document.getElementById('presetInicio').addEventListener('input', substituirTexto);
+        document.getElementById('presetFinal').addEventListener('input', substituirTexto);
+        document.getElementById('converterInicio').addEventListener('change', substituirTexto);
+        document.getElementById('converterFinal').addEventListener('change', substituirTexto);
+
+        // Adicionar funcionalidade ao botão de copiar
+        document.getElementById('btn-copiar').addEventListener('click', copiarTexto);
+    </script>
+</body>
+</html>
