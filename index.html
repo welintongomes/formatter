@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formatter</title>
+    <title>Substituir Múltiplos Caracteres em Tempo Real</title>
     <style>
+        h1{
+            font-size: 16px;
+        }
+        h2{
+            font-size: 10px;
+        }
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -12,6 +18,16 @@
         textarea {
             width: 100%;
             height: 50px;
+            margin-top: 10px;
+        }
+        input#charNovo {
+            width: 50%;
+            height: 1px;
+            margin-top: 10px;
+        }
+        input#charOriginal {
+            width: 50%;
+            height: 1px;
             margin-top: 10px;
         }
         input[type="text"], button {
@@ -33,17 +49,33 @@
         }
         #presetInicio{
             width: 100%;
-            height: 5%;
+            height: 12px;
             margin-top: 10px;
         }
         #presetFinal{
             width: 100%;
-            height: 5%;
+            height: 12px;
             margin-top: 10px;
         }
+        #btn-copiar{
+            width: 101%;
+            height: 6vh;
+            text-align: center;
+        }
+        #alinhar{
+            display: flex;
+            width: 100%;
+            
+        }
+        #tudo{
+            display: grid;
+            width: 100%;
+        }
+        
     </style>
 </head>
 <body>
+    <div id="tudo">
     <h1>Substituir Múltiplos Caracteres no Texto (Tempo Real)</h1>
     <label for="texto">Insira o texto abaixo:</label>
     <textarea id="texto"></textarea>
@@ -52,27 +84,27 @@
     <textarea id="resultado" readonly></textarea>
     
     <button id="btn-copiar">Copiar Código</button>
-    
-    <label for="presetInicio">Texto que sempre aparece no início:
-        <input type="checkbox" id="converterInicio"> Converter na substituição?
+    <div class="botoes-preset">
+    <label for="presetInicio">Preset topo:
+        <input type="checkbox" id="converterInicio"> Converter?
     </label>
 
     <textarea id="presetInicio" placeholder="Insira o valor fixo para o início"></textarea>
 
-    <label for="presetFinal">Texto que sempre aparece no final:
-        <input type="checkbox" id="converterFinal"> Converter na substituição?
+    <label for="presetFinal">Preset fim:
+        <input type="checkbox" id="converterFinal"> Converter?
     </label>
     
     <textarea id="presetFinal" placeholder="Insira o valor fixo para o final"></textarea>
-
-
-    <label for="charOriginal">Caracteres a serem substituídos (separados por vírgula):</label>
-    <input type="text" id="charOriginal" placeholder="Ex: <,>">
-
-    <label for="charNovo">Novos caracteres (separados por vírgula, na mesma ordem):</label>
-    <input type="text" id="charNovo" placeholder="Ex: &lt;,&gt;">
-
+    </div>
+    <p>Qual caracteres quer substituir?</p>
+<div id="alinhar">
     
+    <input type="text" id="charOriginal" placeholder="Substituir: Ia,olá,9">
+    <p>=></p>
+    <input type="text" id="charNovo" placeholder="Por: a,b,c">
+</div>
+    </div>
 
     <script>
         // Carregar preferências salvas
